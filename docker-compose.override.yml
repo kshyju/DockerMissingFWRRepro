@@ -1,0 +1,4 @@
+services:
+  dockermissingfwrrepro:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development

@@ -1,0 +1,25 @@
+services:
+  dockermissingfwrrepro:
+    image: ${DOCKER_REGISTRY-}dockermissingfwrrepro
+    build:
+      context: .
+      dockerfile: DockerMissingFWRRepro/Dockerfile
+
+    environment:
+      AzureWebJobsStorage: UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://azurite:10000/;
+      FUNCTIONS_WORKER_RUNTIME: dotnet-isolated
+    ports:
+      - "8080:80"
+    depends_on:
+      - azurite
+    
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    command: "azurite --loose --blobHost 0.0.0.0 --blobPort 10000 --queueHost 0.0.0.0 --queuePort 10001 --tableHost 0.0.0.0 --tablePort 10002 --location /workspace --debug /workspace/debug.log"
+    ports:
+       - "20000:10000"
+       - "20001:10001"
+       - "20002:10002"
+    environment: 
+      - AZURE_STORAGE_ACCOUNT=devstoreaccount1
+      - AZURE_STORAGE_KEY=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
